@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "642920773924",
+    "project_id": "re-wind-6f3cd",
+    "storage_bucket": "re-wind-6f3cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642920773924:android:6146b686b5618bae569bb1",
+        "android_client_info": {
+          "package_name": "com.android.re_wind"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrnG4p6w1fyBBVeuu7s4XcI8mXUxnSaHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
