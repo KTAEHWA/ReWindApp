@@ -10,4 +10,5 @@ data class RwSchedule(
     val message: String = "",
     val completed: Boolean? = false,
     @ServerTimestamp val timestamp: Date? = null,
+    val time: ScheduleTime = ScheduleTime() // 커스텀 클래스 사용
 )

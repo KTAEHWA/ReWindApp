@@ -2,11 +2,14 @@ package com.android.re_wind.ui.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.android.re_wind.data.model.ScheduleTime
 import com.android.re_wind.data.repositories.ScheduleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import java.util.Date
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = ScheduleRepository.getInstance()
 
@@ -21,6 +24,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val selectedDate = MutableStateFlow(Date())
 
     /**
+     * 선택된 시간
+     */
+    private val _selectedTime = MutableStateFlow(ScheduleTime())
+    val selectedTime: MutableStateFlow<ScheduleTime> get() = _selectedTime
+
+    /**
      * 선택된 날짜의 할 일 리스트
      */
     val selectedDateScheduleList = selectedDate.flatMapLatest {
@@ -31,10 +40,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      * 일정 생성
      *
      * @param date 날짜
+     * @param time 시간
      * @param message 할 일
      */
-    suspend fun createSchedule(date: Date, message: String) =
-        repository.createSchedule(date, message)
+    suspend fun createSchedule(date: Date, time: ScheduleTime, message: String) =
+        repository.createSchedule(date, time, message)
 
     /**
      * 일정 완료
@@ -47,10 +57,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      *
      * @param documentId Firestore document ID
      * @param date 날짜
+     * @param time 시간
      * @param message 할 일
      */
-    suspend fun editSchedule(documentId: String, date: Date, message: String) =
-        repository.editSchedule(documentId, date, message)
+    suspend fun editSchedule(documentId: String, date: Date, time: ScheduleTime, message: String) =
+        repository.editSchedule(documentId, date, time, message)
 
     /**
      * 일정 삭제
@@ -59,4 +70,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      */
     suspend fun removeSchedule(documentId: String) =
         repository.removeSchedule(documentId)
+
+    /**
+     * 시간 설정
+     *
+     * @param hour 시간
+     * @param minute 분
+     */
+    fun setTime(hour: Int, minute: Int) {
+        _selectedTime.value = ScheduleTime(hour, minute)
+    }
 }

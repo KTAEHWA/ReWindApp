@@ -65,6 +65,22 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- TimePicker 추가 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner"
+                android:layout_marginHorizontal="24dp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/schedule_field"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"

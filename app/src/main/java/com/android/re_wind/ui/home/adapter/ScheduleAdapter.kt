@@ -37,6 +37,9 @@ class ScheduleAdapter : ListAdapter<RwSchedule, ScheduleAdapter.ScheduleItemView
             }
 
             messageTextView.text = item.message
+            // 시간 정보 표시 (예시: "HH:mm" 형식)
+            val timeText = "${item.time.hour}:${item.time.minute.toString().padStart(2, '0')}"
+            timeTextView.text = timeText // timeTextView는 ItemScheduleBinding에 있는 시간 표시 TextView로 가정
         }
     }
 
@@ -50,13 +53,14 @@ class ScheduleAdapter : ListAdapter<RwSchedule, ScheduleAdapter.ScheduleItemView
             }
 
             override fun areContentsTheSame(oldItem: RwSchedule, newItem: RwSchedule): Boolean {
-                return oldItem.date.time == newItem.date.time &&
+                return oldItem.date == newItem.date &&
                         oldItem.completed == newItem.completed &&
-                        oldItem.message == newItem.message
+                        oldItem.message == newItem.message &&
+                        oldItem.time == newItem.time // 시간 비교 추가
             }
 
             override fun getChangePayload(oldItem: RwSchedule, newItem: RwSchedule): Any {
-                return Object()
+                return Any()
             }
         }
     }
