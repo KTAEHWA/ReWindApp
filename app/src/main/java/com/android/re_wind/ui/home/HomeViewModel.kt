@@ -42,9 +42,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      * @param date 날짜
      * @param time 시간
      * @param message 할 일
+     * @param alarmEnabled 알람 설정 여부
      */
-    suspend fun createSchedule(date: Date, time: ScheduleTime, message: String) =
-        repository.createSchedule(date, time, message)
+    suspend fun createSchedule(date: Date, time: ScheduleTime, message: String, alarmEnabled: Boolean) =
+        repository.createSchedule(date, time, message, alarmEnabled)
 
     /**
      * 일정 완료
@@ -59,9 +60,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      * @param date 날짜
      * @param time 시간
      * @param message 할 일
+     * @param alarmEnabled 알람 설정 여부
      */
-    suspend fun editSchedule(documentId: String, date: Date, time: ScheduleTime, message: String) =
-        repository.editSchedule(documentId, date, time, message)
+    suspend fun editSchedule(documentId: String, date: Date, time: ScheduleTime, message: String, alarmEnabled: Boolean) =
+        repository.editSchedule(documentId, date, time, message, alarmEnabled)
 
     /**
      * 일정 삭제

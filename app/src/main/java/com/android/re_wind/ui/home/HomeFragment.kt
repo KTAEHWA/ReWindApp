@@ -6,8 +6,6 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.TimePicker
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -175,12 +173,14 @@ class HomeFragment : BaseFragment() {
 
                 val hour = if (Build.VERSION.SDK_INT >= 23) timePicker.hour else timePicker.currentHour
                 val minute = if (Build.VERSION.SDK_INT >= 23) timePicker.minute else timePicker.currentMinute
+                val alarmEnabled = alarmSwitch.isChecked
 
                 lifecycleScope.launch {
                     viewModel.createSchedule(
                         date,
                         ScheduleTime(hour, minute),
-                        scheduleEditText.text.toString().trim()
+                        scheduleEditText.text.toString().trim(),
+                        alarmEnabled
                     )
                     Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -248,6 +248,7 @@ class HomeFragment : BaseFragment() {
             timePicker.setIs24HourView(true)
             timePicker.hour = schedule.time.hour
             timePicker.minute = schedule.time.minute
+            alarmSwitch.isChecked = schedule.alarmEnabled
 
             removeButton.setOnClickListener {
                 lifecycleScope.launch {
@@ -263,13 +264,15 @@ class HomeFragment : BaseFragment() {
 
                 val hour = if (Build.VERSION.SDK_INT >= 23) timePicker.hour else timePicker.currentHour
                 val minute = if (Build.VERSION.SDK_INT >= 23) timePicker.minute else timePicker.currentMinute
+                val alarmEnabled = alarmSwitch.isChecked
 
                 lifecycleScope.launch {
                     viewModel.editSchedule(
                         schedule.documentId,
                         date,
                         ScheduleTime(hour, minute),
-                        scheduleEditText.text.toString().trim()
+                        scheduleEditText.text.toString().trim(),
+                        alarmEnabled
                     )
                     Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -282,6 +285,8 @@ class HomeFragment : BaseFragment() {
             }
         }
     }
+
+
 
     private class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         FragmentStateAdapter(fragmentManager, lifecycle) {

@@ -75,9 +75,9 @@ class ScheduleRepository private constructor() {
         }
     }
 
-    suspend fun createSchedule(date: Date, time: ScheduleTime, message: String) {
+    suspend fun createSchedule(date: Date, time: ScheduleTime, message: String, alarmEnabled: Boolean) {
         val uid = auth.uid ?: return
-        val schedule = RwSchedule("", date, message, false, null, time)
+        val schedule = RwSchedule("", date, message, false, null, time, alarmEnabled)
 
         db.collection("users")
             .document(uid)
@@ -102,7 +102,7 @@ class ScheduleRepository private constructor() {
             .await()
     }
 
-    suspend fun editSchedule(documentId: String, date: Date, time: ScheduleTime, message: String) {
+    suspend fun editSchedule(documentId: String, date: Date, time: ScheduleTime, message: String, alarmEnabled: Boolean) {
         val uid = auth.uid ?: return
 
         db.collection("users")
@@ -113,7 +113,8 @@ class ScheduleRepository private constructor() {
                 hashMapOf(
                     "date" to date,
                     "time" to time,
-                    "message" to message
+                    "message" to message,
+                    "alarmEnabled" to alarmEnabled
                 ), SetOptions.merge()
             )
             .await()
