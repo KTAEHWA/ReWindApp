@@ -286,8 +286,6 @@ class HomeFragment : BaseFragment() {
         }
     }
 
-
-
     private class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
         override fun getItemCount() = 3
