@@ -1,5 +1,6 @@
 package com.android.re_wind.data.repositories
 
+import android.graphics.Color
 import com.android.re_wind.data.model.RwSchedule
 import com.android.re_wind.data.model.ScheduleTime
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +18,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import java.util.Date
+
+import java.util.Random
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ScheduleRepository private constructor() {
@@ -75,7 +80,33 @@ class ScheduleRepository private constructor() {
         }
     }
 
+
+    fun getAllSchedules() = callbackFlow {
+        val listener =
+            FirebaseAuth.AuthStateListener { p0 -> this@callbackFlow.trySend(p0.currentUser) }
+        auth.addAuthStateListener(listener)
+
+        awaitClose {
+            auth.removeAuthStateListener(listener)
+        }
+    }.flatMapLatest {
+        if (it == null) {
+            flow { emit(listOf()) }
+        } else {
+            db.collection("users")
+                .document(it.uid)
+                .collection("schedules")
+                .snapshots()
+                .map { querySnapshot ->
+                    querySnapshot.documents.mapNotNull { it.toObject(RwSchedule::class.java) }
+                }
+        }
+    }
+
+
+
     suspend fun createSchedule(date: Date, time: ScheduleTime, message: String, alarmEnabled: Boolean) {
+
         val uid = auth.uid ?: return
         val schedule = RwSchedule("", date, message, false, null, time, alarmEnabled)
 

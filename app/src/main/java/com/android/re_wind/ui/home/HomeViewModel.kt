@@ -31,6 +31,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      */
     val selectedDate = MutableStateFlow(Date())
 
+
     /**
      * 선택된 시간
      */
@@ -43,6 +44,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val selectedDateScheduleList = selectedDate.flatMapLatest {
         repository.getScheduleList(it)
     }
+
+    /**
+     * 모든 일정 리스트
+     */
+    val allSchedules = repository.getAllSchedules()
 
     /**
      * 일정 생성
@@ -89,6 +95,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun removeSchedule(documentId: String) =
         repository.removeSchedule(documentId)
 
+
     /**
      * 시간 설정
      *
@@ -132,4 +139,5 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
 }
