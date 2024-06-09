@@ -2,6 +2,7 @@ package com.android.re_wind.data.repositories
 
 import android.graphics.Color
 import com.android.re_wind.data.model.RwSchedule
+import com.android.re_wind.data.model.ScheduleTime
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.Query
@@ -17,8 +18,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import java.util.Date
+
 import java.util.Random
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class ScheduleRepository private constructor() {
     companion object {
         private var instance: ScheduleRepository? = null
@@ -74,6 +80,7 @@ class ScheduleRepository private constructor() {
         }
     }
 
+
     fun getAllSchedules() = callbackFlow {
         val listener =
             FirebaseAuth.AuthStateListener { p0 -> this@callbackFlow.trySend(p0.currentUser) }
@@ -97,9 +104,11 @@ class ScheduleRepository private constructor() {
     }
 
 
-    suspend fun createSchedule(date: Date, message: String) {
+
+    suspend fun createSchedule(date: Date, time: ScheduleTime, message: String, alarmEnabled: Boolean) {
+
         val uid = auth.uid ?: return
-        val schedule = RwSchedule("", date, message, null)
+        val schedule = RwSchedule("", date, message, false, null, time, alarmEnabled)
 
         db.collection("users")
             .document(uid)
@@ -124,7 +133,7 @@ class ScheduleRepository private constructor() {
             .await()
     }
 
-    suspend fun editSchedule(documentId: String, date: Date, message: String) {
+    suspend fun editSchedule(documentId: String, date: Date, time: ScheduleTime, message: String, alarmEnabled: Boolean) {
         val uid = auth.uid ?: return
 
         db.collection("users")
@@ -134,7 +143,9 @@ class ScheduleRepository private constructor() {
             .set(
                 hashMapOf(
                     "date" to date,
-                    "message" to message
+                    "time" to time,
+                    "message" to message,
+                    "alarmEnabled" to alarmEnabled
                 ), SetOptions.merge()
             )
             .await()
