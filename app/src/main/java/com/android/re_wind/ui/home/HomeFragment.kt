@@ -1,5 +1,6 @@
 package com.android.re_wind.ui.home
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import com.android.re_wind.R
 import com.android.re_wind.common.extensions.toLocal
 import com.android.re_wind.common.extensions.toUtc
 import com.android.re_wind.data.model.RwSchedule
+import com.android.re_wind.data.model.ScheduleTime
 import com.android.re_wind.databinding.DialogCreateScheduleBinding
 import com.android.re_wind.databinding.DialogEditScheduleBinding
 import com.android.re_wind.databinding.FragmentHomeBinding
@@ -163,13 +165,22 @@ class HomeFragment : BaseFragment() {
                 datePicker.show(childFragmentManager, "date_picker")
             }
 
+            // TimePicker 초기화
+            timePicker.setIs24HourView(true)
+
             createButton.setOnClickListener {
                 if (!createTextView.isEnabled) return@setOnClickListener
+
+                val hour = if (Build.VERSION.SDK_INT >= 23) timePicker.hour else timePicker.currentHour
+                val minute = if (Build.VERSION.SDK_INT >= 23) timePicker.minute else timePicker.currentMinute
+                val alarmEnabled = alarmSwitch.isChecked
 
                 lifecycleScope.launch {
                     viewModel.createSchedule(
                         date,
-                        scheduleEditText.text.toString().trim()
+                        ScheduleTime(hour, minute),
+                        scheduleEditText.text.toString().trim(),
+                        alarmEnabled
                     )
                     Toast.makeText(requireContext(), "일정이 추가되었습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -233,6 +244,12 @@ class HomeFragment : BaseFragment() {
                 datePicker.show(childFragmentManager, "date_picker")
             }
 
+            // TimePicker 초기화
+            timePicker.setIs24HourView(true)
+            timePicker.hour = schedule.time.hour
+            timePicker.minute = schedule.time.minute
+            alarmSwitch.isChecked = schedule.alarmEnabled
+
             removeButton.setOnClickListener {
                 lifecycleScope.launch {
                     viewModel.removeSchedule(schedule.documentId)
@@ -245,11 +262,17 @@ class HomeFragment : BaseFragment() {
             editButton.setOnClickListener {
                 if (!dateEditText.isEnabled) return@setOnClickListener
 
+                val hour = if (Build.VERSION.SDK_INT >= 23) timePicker.hour else timePicker.currentHour
+                val minute = if (Build.VERSION.SDK_INT >= 23) timePicker.minute else timePicker.currentMinute
+                val alarmEnabled = alarmSwitch.isChecked
+
                 lifecycleScope.launch {
                     viewModel.editSchedule(
                         schedule.documentId,
                         date,
-                        scheduleEditText.text.toString().trim()
+                        ScheduleTime(hour, minute),
+                        scheduleEditText.text.toString().trim(),
+                        alarmEnabled
                     )
                     Toast.makeText(requireContext(), "일정이 수정되었습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -268,18 +291,10 @@ class HomeFragment : BaseFragment() {
         override fun getItemCount() = 3
 
         override fun createFragment(position: Int): Fragment {
-            when (position) {
-                0 -> {
-                    return HomePage()
-                }
-
-                1 -> {
-                    return CalendarPage()
-                }
-
-                else -> {
-                    return SchedulePage()
-                }
+            return when (position) {
+                0 -> HomePage()
+                1 -> CalendarPage()
+                else -> SchedulePage()
             }
         }
     }
