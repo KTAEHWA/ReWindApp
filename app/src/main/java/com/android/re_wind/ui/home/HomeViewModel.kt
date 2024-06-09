@@ -20,12 +20,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
      */
     val selectedDate = MutableStateFlow(Date())
 
+
     /**
      * 선택된 날짜의 할 일 리스트
      */
     val selectedDateScheduleList = selectedDate.flatMapLatest {
         repository.getScheduleList(it)
     }
+
+    /**
+     * 모든 일정 리스트
+     */
+    val allSchedules = repository.getAllSchedules()
 
     /**
      * 일정 생성

@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.android.re_wind.MemoViewModel
+import com.android.re_wind.data.model.Memo
 import com.android.re_wind.databinding.PageHomeBinding
 import com.android.re_wind.ui.BaseFragment
 import com.android.re_wind.ui.home.HomeFragment
@@ -18,6 +20,7 @@ class HomePage : BaseFragment() {
     private var _binding: PageHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val memoViewModel: MemoViewModel by viewModels()
     private val viewModel by viewModels<HomeViewModel>(ownerProducer = { requireParentFragment() })
     private val adapter by lazy { ScheduleAdapter() }
 
@@ -55,6 +58,34 @@ class HomePage : BaseFragment() {
             }
 
             recyclerView.adapter = adapter
+
+            // Memo logic
+            memoViewModel.memo.observe(viewLifecycleOwner) { memo ->
+                memo?.let {
+                    viewSwitcher.displayedChild = 1
+                    textViewMemo.text = it.content
+                    buttonSaveMemo.visibility = View.GONE
+                } ?: run {
+                    viewSwitcher.displayedChild = 0
+                    buttonSaveMemo.visibility = View.VISIBLE
+                }
+            }
+
+            buttonSaveMemo.setOnClickListener {
+                val content = editTextMemo.text.toString()
+                if (content.isNotBlank()) {
+                    memoViewModel.insert(Memo(content = content))
+                    viewSwitcher.displayedChild = 1
+                    textViewMemo.text = content
+                    buttonSaveMemo.visibility = View.GONE
+                }
+            }
+
+            textViewMemo.setOnClickListener {
+                viewSwitcher.displayedChild = 0
+                editTextMemo.setText(textViewMemo.text)
+                buttonSaveMemo.visibility = View.VISIBLE
+            }
         }
 
         lifecycleScope.launch {
@@ -63,4 +94,5 @@ class HomePage : BaseFragment() {
             }
         }
     }
+
 }

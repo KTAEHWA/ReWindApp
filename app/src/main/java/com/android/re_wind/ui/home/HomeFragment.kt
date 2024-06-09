@@ -283,4 +283,6 @@ class HomeFragment : BaseFragment() {
             }
         }
     }
+
+
 }
