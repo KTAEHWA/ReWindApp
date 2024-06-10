@@ -53,11 +53,11 @@ Calendar + To-do List app
 [https://velog.io/@hyooosong/Android-Room](https://velog.io/@hyooosong/Android-Room)
 
 # 임석현
-캘린더 구현
+알람 기능 구현
+일정 시간설정 기능 구현
 
--기능적 요구사항
-* 캘린더 페이지 구현
-* 특정 날짜별로 일정 작성/수정
-* 특정 날짜 클릭시 일정리스트 불러오기
-* 일정리스트에서 일정 세부사항 불러오기
+일정을 시간/분 단위로 설정/수정/삭제 가능하게 한다.
+알람을 시간/분 단위로 설정 가능하게 한다.
+알람 on/off 설정 가능하게 한다.
+
 
